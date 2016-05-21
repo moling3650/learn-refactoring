@@ -3,7 +3,7 @@
 # @Date    : 2016-05-21 11:09:22
 # @Author  : moling (365024424@qq.com)
 # @Link    : http://www.qiangtaoli.com
-# @Version : 1.1
+# @Version : 1.4
 
 
 class Movie(object):
@@ -55,6 +55,12 @@ class Rental(object):
                 result += (self._days_rented - 3) * 1.5
         return result
 
+    def get_frequent_renter_points(self):
+        if self._movie.get_price_code() == Movie.NEW_RELEASE and self._days_rented > 1:
+            return 2
+        else:
+            return 1
+
 
 class Customer(object):
 
@@ -75,11 +81,7 @@ class Customer(object):
         frequent_renter_points = 0
         result = 'Rental Record for ' + self._name + '\n'
         for each in self._rentals:
-            # add frequent renter points
-            frequent_renter_points += 1
-            # add bonus for a two day new release rental
-            if each.get_movie().get_price_code() == Movie.NEW_RELEASE and each.get_days_rented() > 1:
-                frequent_renter_points += 1
+            frequent_renter_points += each.get_frequent_renter_points()
 
             # show figures for this rental
             result += '\t' + each.get_movie().get_title() + '\t' + str(each.get_charge()) + '\n'
