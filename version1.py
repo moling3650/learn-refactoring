@@ -77,19 +77,19 @@ class Customer(object):
         result += 'You earned ' + str(frequent_renter_points) + ' frequent renter points'
         return result
 
-    def _amount_for(self, rental):
-        this_amount = 0.0
-        if rental.get_movie().get_price_code() == Movie.REGULAR:
-            this_amount += 2
-            if rental.get_days_rented() > 2:
-                this_amount += (rental.get_days_rented() - 2) * 1.5
-        elif rental.get_movie().get_price_code() == Movie.NEW_RELEASE:
-            this_amount += rental.get_days_rented() * 3
-        elif rental.get_movie().get_price_code() == Movie.CHILDRENS:
-            this_amount += 1.5
-            if rental.get_days_rented() > 3:
-                this_amount += (rental.get_days_rented() - 3) * 1.5
-        return this_amount
+    def _amount_for(self, a_rental):
+        result = 0.0
+        if a_rental.get_movie().get_price_code() == Movie.REGULAR:
+            result += 2
+            if a_rental.get_days_rented() > 2:
+                result += (a_rental.get_days_rented() - 2) * 1.5
+        elif a_rental.get_movie().get_price_code() == Movie.NEW_RELEASE:
+            result += a_rental.get_days_rented() * 3
+        elif a_rental.get_movie().get_price_code() == Movie.CHILDRENS:
+            result += 1.5
+            if a_rental.get_days_rented() > 3:
+                result += (a_rental.get_days_rented() - 3) * 1.5
+        return result
 
 if __name__ == '__main__':
     c = Customer('moling')
