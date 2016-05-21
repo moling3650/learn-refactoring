@@ -3,7 +3,7 @@
 # @Date    : 2016-05-21 11:09:22
 # @Author  : moling (365024424@qq.com)
 # @Link    : http://www.qiangtaoli.com
-# @Version : 1
+# @Version : 1.1
 
 
 class Movie(object):
