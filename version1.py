@@ -3,7 +3,7 @@
 # @Date    : 2016-05-21 11:09:22
 # @Author  : moling (365024424@qq.com)
 # @Link    : http://www.qiangtaoli.com
-# @Version : 1.5
+# @Version : 1.6
 
 
 class Movie(object):
@@ -26,6 +26,20 @@ class Movie(object):
     def get_title(self):
         return self._title
 
+    def get_charge(self, days_rented):
+        result = 0.0
+        if self._price_code == Movie.REGULAR:
+            result += 2
+            if days_rented > 2:
+                result += (days_rented - 2) * 1.5
+        elif self._price_code == Movie.NEW_RELEASE:
+            result += days_rented * 3
+        elif self._price_code == Movie.CHILDRENS:
+            result += 1.5
+            if days_rented > 3:
+                result += (days_rented - 3) * 1.5
+        return result
+
 
 class Rental(object):
 
@@ -42,18 +56,7 @@ class Rental(object):
         return self._movie
 
     def get_charge(self):
-        result = 0.0
-        if self._movie.get_price_code() == Movie.REGULAR:
-            result += 2
-            if self._days_rented > 2:
-                result += (self._days_rented - 2) * 1.5
-        elif self._movie.get_price_code() == Movie.NEW_RELEASE:
-            result += self._days_rented * 3
-        elif self._movie.get_price_code() == Movie.CHILDRENS:
-            result += 1.5
-            if self._days_rented > 3:
-                result += (self._days_rented - 3) * 1.5
-        return result
+        return self._movie.get_charge(self._days_rented)
 
     def get_frequent_renter_points(self):
         if self._movie.get_price_code() == Movie.NEW_RELEASE and self._days_rented > 1:
