@@ -3,7 +3,7 @@
 # @Date    : 2016-05-21 11:09:22
 # @Author  : moling (365024424@qq.com)
 # @Link    : http://www.qiangtaoli.com
-# @Version : 1.4
+# @Version : 1.5
 
 
 class Movie(object):
@@ -77,19 +77,21 @@ class Customer(object):
         return self._name
 
     def statament(self):
-        total_amount = 0.0
-        frequent_renter_points = 0
         result = 'Rental Record for ' + self._name + '\n'
         for each in self._rentals:
-            frequent_renter_points += each.get_frequent_renter_points()
-
             # show figures for this rental
             result += '\t' + each.get_movie().get_title() + '\t' + str(each.get_charge()) + '\n'
-            total_amount += each.get_charge()
+
         # add footer lines
-        result += 'Amount owed is ' + str(total_amount) + '\n'
-        result += 'You earned ' + str(frequent_renter_points) + ' frequent renter points'
+        result += 'Amount owed is ' + str(self._get_total_charge()) + '\n'
+        result += 'You earned ' + str(self._get_total_frequent_renter_points()) + ' frequent renter points'
         return result
+
+    def _get_total_charge(self):
+        return sum(each.get_charge() for each in self._rentals)
+
+    def _get_total_frequent_renter_points(self):
+        return sum(each.get_frequent_renter_points() for each in self._rentals)
 
 if __name__ == '__main__':
     c = Customer('moling')
