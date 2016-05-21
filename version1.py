@@ -40,6 +40,12 @@ class Movie(object):
                 result += (days_rented - 3) * 1.5
         return result
 
+    def get_frequent_renter_points(self, days_rented):
+        if self._price_code == Movie.NEW_RELEASE and days_rented > 1:
+            return 2
+        else:
+            return 1
+
 
 class Rental(object):
 
@@ -59,10 +65,7 @@ class Rental(object):
         return self._movie.get_charge(self._days_rented)
 
     def get_frequent_renter_points(self):
-        if self._movie.get_price_code() == Movie.NEW_RELEASE and self._days_rented > 1:
-            return 2
-        else:
-            return 1
+        return self._movie.get_frequent_renter_points(self._days_rented)
 
 
 class Customer(object):
