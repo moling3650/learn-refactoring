@@ -3,7 +3,71 @@
 # @Date    : 2016-05-21 11:09:22
 # @Author  : moling (365024424@qq.com)
 # @Link    : http://www.qiangtaoli.com
-# @Version : 1.6
+# @Version : 1.7
+from abc import ABCMeta, abstractmethod
+
+
+class Price(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def get_price_code(self):
+        pass
+
+    @abstractmethod
+    def get_charge(self, days_rented):
+        pass
+
+    def get_frequent_renter_points(self, days_rented):
+        return 1
+
+
+class ChildrensPrice(Price):
+    """docstring for ChildrensPrice"""
+
+    def __init__(self):
+        super(ChildrensPrice, self).__init__()
+
+    def get_price_code(self):
+        return Movie.CHILDRENS
+
+    def get_charge(self, days_rented):
+        result = 1.5
+        if days_rented > 3:
+            result += (days_rented - 3) * 1.5
+        return result
+
+
+class RegularPrice(Price):
+    """docstring for RegularPrice"""
+
+    def __init__(self):
+        super(RegularPrice, self).__init__()
+
+    def get_price_code(self):
+        return Movie.REGULAR
+
+    def get_charge(self, days_rented):
+        result = 2
+        if days_rented > 2:
+            result += (days_rented - 2) * 1.5
+        return result
+
+
+class NewReleasePrice(Price):
+    """docstring for NewReleasePrice"""
+
+    def __init__(self):
+        super(NewReleasePrice, self).__init__()
+
+    def get_price_code(self):
+        return Movie.NEW_RELEASE
+
+    def get_charge(self, days_rented):
+        return days_rented * 3.0
+
+    def get_frequent_renter_points(self, days_rented):
+        return 2 if (days_rented > 1) else 1
 
 
 class Movie(object):
@@ -15,30 +79,30 @@ class Movie(object):
 
     def __init__(self, title, price_code):
         self._title = title
-        self._price_code = price_code
+        self.set_price_code(price_code)
 
     def get_price_code(self):
-        return self._price_code
+        return self._price.get_price_code(self)
 
     def set_price_code(self, price_code):
-        self._price_code = price_code
+        price_dict = {
+            self.CHILDRENS: ChildrensPrice,
+            self.REGULAR: RegularPrice,
+            self.NEW_RELEASE: NewReleasePrice
+        }
+        try:
+            self._price = price_dict[price_code]
+        except KeyError:
+            raise ValueError('Incorrect Price Code')
 
     def get_title(self):
         return self._title
 
     def get_charge(self, days_rented):
-        result = 0.0
-        if self._price_code == Movie.REGULAR:
-            result += 2
-            if days_rented > 2:
-                result += (days_rented - 2) * 1.5
-        elif self._price_code == Movie.NEW_RELEASE:
-            result += days_rented * 3
-        elif self._price_code == Movie.CHILDRENS:
-            result += 1.5
-            if days_rented > 3:
-                result += (days_rented - 3) * 1.5
-        return result
+        return self._price.get_charge(self, days_rented)
+
+    def get_frequent_renter_points(self, days_rented):
+        return self._price.get_frequent_renter_points(self, days_rented)
 
 
 class Rental(object):
@@ -59,10 +123,7 @@ class Rental(object):
         return self._movie.get_charge(self._days_rented)
 
     def get_frequent_renter_points(self):
-        if self._movie.get_price_code() == Movie.NEW_RELEASE and self._days_rented > 1:
-            return 2
-        else:
-            return 1
+        return self._movie.get_frequent_renter_points(self._days_rented)
 
 
 class Customer(object):
