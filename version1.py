@@ -41,6 +41,20 @@ class Rental(object):
     def get_movie(self):
         return self._movie
 
+    def get_charge(self):
+        result = 0.0
+        if self._movie.get_price_code() == Movie.REGULAR:
+            result += 2
+            if self._days_rented > 2:
+                result += (self._days_rented - 2) * 1.5
+        elif self._movie.get_price_code() == Movie.NEW_RELEASE:
+            result += self._days_rented * 3
+        elif self._movie.get_price_code() == Movie.CHILDRENS:
+            result += 1.5
+            if self._days_rented > 3:
+                result += (self._days_rented - 3) * 1.5
+        return result
+
 
 class Customer(object):
 
@@ -61,8 +75,6 @@ class Customer(object):
         frequent_renter_points = 0
         result = 'Rental Record for ' + self._name + '\n'
         for each in self._rentals:
-            this_amount = self._amount_for(each)
-
             # add frequent renter points
             frequent_renter_points += 1
             # add bonus for a two day new release rental
@@ -70,25 +82,11 @@ class Customer(object):
                 frequent_renter_points += 1
 
             # show figures for this rental
-            result += '\t' + each.get_movie().get_title() + '\t' + str(this_amount) + '\n'
-            total_amount += this_amount
+            result += '\t' + each.get_movie().get_title() + '\t' + str(each.get_charge()) + '\n'
+            total_amount += each.get_charge()
         # add footer lines
         result += 'Amount owed is ' + str(total_amount) + '\n'
         result += 'You earned ' + str(frequent_renter_points) + ' frequent renter points'
-        return result
-
-    def _amount_for(self, a_rental):
-        result = 0.0
-        if a_rental.get_movie().get_price_code() == Movie.REGULAR:
-            result += 2
-            if a_rental.get_days_rented() > 2:
-                result += (a_rental.get_days_rented() - 2) * 1.5
-        elif a_rental.get_movie().get_price_code() == Movie.NEW_RELEASE:
-            result += a_rental.get_days_rented() * 3
-        elif a_rental.get_movie().get_price_code() == Movie.CHILDRENS:
-            result += 1.5
-            if a_rental.get_days_rented() > 3:
-                result += (a_rental.get_days_rented() - 3) * 1.5
         return result
 
 if __name__ == '__main__':
