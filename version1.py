@@ -11,27 +11,24 @@ class Price(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def get_price_code(self):
+    def get_price_code():
         pass
 
     @abstractmethod
-    def get_charge(self, days_rented):
+    def get_charge(days_rented):
         pass
 
-    def get_frequent_renter_points(self, days_rented):
+    def get_frequent_renter_points(days_rented):
         return 1
 
 
 class ChildrensPrice(Price):
     """docstring for ChildrensPrice"""
 
-    def __init__(self):
-        super(ChildrensPrice, self).__init__()
-
-    def get_price_code(self):
+    def get_price_code():
         return Movie.CHILDRENS
 
-    def get_charge(self, days_rented):
+    def get_charge(days_rented):
         result = 1.5
         if days_rented > 3:
             result += (days_rented - 3) * 1.5
@@ -41,13 +38,10 @@ class ChildrensPrice(Price):
 class RegularPrice(Price):
     """docstring for RegularPrice"""
 
-    def __init__(self):
-        super(RegularPrice, self).__init__()
-
-    def get_price_code(self):
+    def get_price_code():
         return Movie.REGULAR
 
-    def get_charge(self, days_rented):
+    def get_charge(days_rented):
         result = 2
         if days_rented > 2:
             result += (days_rented - 2) * 1.5
@@ -57,16 +51,13 @@ class RegularPrice(Price):
 class NewReleasePrice(Price):
     """docstring for NewReleasePrice"""
 
-    def __init__(self):
-        super(NewReleasePrice, self).__init__()
-
-    def get_price_code(self):
+    def get_price_code():
         return Movie.NEW_RELEASE
 
-    def get_charge(self, days_rented):
+    def get_charge(days_rented):
         return days_rented * 3.0
 
-    def get_frequent_renter_points(self, days_rented):
+    def get_frequent_renter_points(days_rented):
         return 2 if (days_rented > 1) else 1
 
 
@@ -82,7 +73,7 @@ class Movie(object):
         self.set_price_code(price_code)
 
     def get_price_code(self):
-        return self._price.get_price_code(self)
+        return self._price.get_price_code()
 
     def set_price_code(self, price_code):
         price_dict = {
@@ -99,10 +90,10 @@ class Movie(object):
         return self._title
 
     def get_charge(self, days_rented):
-        return self._price.get_charge(self, days_rented)
+        return self._price.get_charge(days_rented)
 
     def get_frequent_renter_points(self, days_rented):
-        return self._price.get_frequent_renter_points(self, days_rented)
+        return self._price.get_frequent_renter_points(days_rented)
 
 
 class Rental(object):
@@ -158,8 +149,9 @@ class Customer(object):
         return sum(each.get_frequent_renter_points() for each in self._rentals)
 
 if __name__ == '__main__':
-    c = Customer('moling')
-    c.add_rental(Rental(Movie('Zootopia', 2), 7))
-    c.add_rental(Rental(Movie('The Finest Hours', 0), 3))
-    c.add_rental(Rental(Movie('Angry Birds', 1), 2))
-    print(c.statament())
+    # c = Customer('moling')
+    # c.add_rental(Rental(Movie('Zootopia', 2), 7))
+    # c.add_rental(Rental(Movie('The Finest Hours', 0), 3))
+    # c.add_rental(Rental(Movie('Angry Birds', 1), 2))
+    # print(c.statament())
+    # print(reduce(lambda x, y: x + y, [[1, 2], [3, 4], [], [5]], []))
